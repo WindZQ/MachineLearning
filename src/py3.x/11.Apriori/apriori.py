@@ -36,7 +36,8 @@ def createC1(dataSet):
     # frozenset 表示冻结的 set 集合，元素无改变；可以把它当字典的 key 来使用
     # print 'sort 后=', C1
     # print 'frozenset=', map(frozenset, C1)
-    return map(frozenset, C1)
+    # return map(frozenset, C1) #frozen set, user can't change it.
+    return list(map(frozenset, C1)) # python3
 
 # 计算候选数据集 CK 在数据集 D 中的支持度，并返回支持度大于最小支持度（minSupport）的数据
 def scanD(D, Ck, minSupport):
@@ -57,7 +58,8 @@ def scanD(D, Ck, minSupport):
         for can in Ck:
             # s.issubset(t)  测试是否 s 中的每一个元素都在 t 中
             if can.issubset(tid):
-                if not ssCnt.has_key(can):
+                #if not ssCnt.has_key(can):
+                if not can in ssCnt: # python3
                     ssCnt[can] = 1
                 else:
                     ssCnt[can] += 1
@@ -121,7 +123,7 @@ def apriori(dataSet, minSupport=0.5):
     C1 = createC1(dataSet)
     # print 'C1: ', C1
     # 对每一行进行 set 转换，然后存放到集合中
-    D = map(set, dataSet)
+    D = list(map(set, dataSet)) #python3
     # print 'D=', D
     # 计算候选数据集 C1 在数据集 D 中的支持度，并返回支持度大于 minSupport 的数据
     L1, supportData = scanD(D, C1, minSupport)
@@ -242,7 +244,7 @@ def getActionIds():
     votesmart.apikey = 'a7fa40adec6f4a77178799fae4441030'
     actionIdList = []
     billTitleList = []
-    fr = open('input/11.Apriori/recent20bills.txt')
+    fr = open('../../../input/11.Apriori/recent20bills.txt')
     for line in fr.readlines():
         billNum = int(line.split('\t')[0])
         try:
@@ -332,17 +334,17 @@ def testGenerateRules():
 
 def main():
     # 测试 Apriori 算法
-    # testApriori()
+     testApriori()
 
     # 生成关联规则
-    # testGenerateRules()
+     testGenerateRules()
 
     ##项目案例
     # # 构建美国国会投票记录的事务数据集
     # actionIdList, billTitleList = getActionIds()
     # # 测试前2个
-    # transDict, itemMeaning = getTransList(actionIdList[: 2], billTitleList[: 2])
-    #transDict 表示 action_id的集合，transDict[key]这个就是action_id对应的选项，例如 [1, 2, 3]
+    # # transDict, itemMeaning = getTransList(actionIdList[: 2], billTitleList[: 2])
+    # transDict 表示 action_id的集合，transDict[key]这个就是action_id对应的选项，例如 [1, 2, 3]
     # transDict, itemMeaning = getTransList(actionIdList, billTitleList)
     # # 得到全集的数据
     # dataSet = [transDict[key] for key in transDict.keys()]
@@ -353,16 +355,16 @@ def main():
     # # 项目案例
     # # 发现毒蘑菇的相似特性
     # # 得到全集的数据
-     dataSet = [line.split() for line in open("input/11.Apriori/mushroom.dat").readlines()]
+     dataSet = [line.split() for line in open("../../../input/11.Apriori/mushroom.dat").readlines()]
      L, supportData = apriori(dataSet, minSupport=0.3)
     # # 2表示毒蘑菇，1表示可食用的蘑菇
     # # 找出关于2的频繁子项出来，就知道如果是毒蘑菇，那么出现频繁的也可能是毒蘑菇
      for item in L[1]:
-         if item.intersection('2'):
+        if item.intersection('2'):
              print (item)
     
      for item in L[2]:
-         if item.intersection('2'):
+        if item.intersection('2'):
              print (item)
 
 if __name__ == "__main__":
